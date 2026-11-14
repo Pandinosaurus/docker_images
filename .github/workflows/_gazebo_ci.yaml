@@ -1,0 +1,41 @@
+name: CI Gazebo images
+
+on:
+  pull_request:
+    paths:
+    - '.ci/**'
+    - '.github/workflows/gazebo_ci.yaml'
+    - 'gazebo/11/**'
+  push:
+    paths:
+    - '.ci/**'
+    - '.github/workflows/gazebo_ci.yaml'
+    - 'gazebo/11/**'
+  schedule:
+    # Trigger daily to check for upstream changes
+    - cron: '0 0 * * *'
+jobs:
+  check_images:
+    strategy:
+      fail-fast: false
+      matrix:
+        env:
+          - {HUB_REPO: gazebo, HUB_RELEASE: 11, HUB_OS_NAME: ubuntu, HUB_OS_CODE_NAME: focal}
+    runs-on: ubuntu-latest
+    env:
+      GITHUBEMAIL: ${{ secrets.GITHUBEMAIL }}
+      GITHUBTOKEN: ${{ secrets.GITHUBTOKEN }}
+      GITHUBUSER: ${{ secrets.GITHUBUSER }}
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v6.3.0
+        with:
+          python-version: 3.x
+      - name: Install requirements
+        run: |
+             python -m pip install --upgrade pip
+             pip install -r docker/requirements.txt
+             pip install -r .ci/requirements.txt
+      - name: Check and build Gazebo image
+        env: ${{matrix.env}}
+        run: .ci/ci_script.py

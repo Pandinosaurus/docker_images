@@ -11,19 +11,23 @@ images:
             - docker_templates
         upstream_packages:
             - bash-completion
+            - python3-argcomplete
+            - python3-flake8
+            - python3-flake8-blind-except
+            - python3-flake8-builtins
+            - python3-flake8-class-newline
+            - python3-flake8-comprehensions
+            - python3-flake8-deprecated
+            - python3-flake8-docstrings
+            - python3-flake8-import-order
+            - python3-flake8-quotes
+            - python3-pytest-cov
+            - python3-pytest-mock
+            - python3-pytest-repeat
+            - python3-pytest-rerunfailures
+            - python3-pytest-runner
+            - python3-pytest-timeout
         pip3_install:
-            - argcomplete
-            - flake8
-            - flake8-blind-except
-            - flake8-builtins
-            - flake8-class-newline
-            - flake8-comprehensions
-            - flake8-deprecated
-            - flake8-docstrings
-            - flake8-import-order
-            - flake8-quotes
-            - pytest-repeat
-            - pytest-rerunfailures
         ws: /opt/ros2_ws
     source:
         maintainer_name: @(maintainer_name)
@@ -34,7 +38,7 @@ images:
             - libasio-dev
             - libssl-dev
             - libtinyxml2-dev
-        ros2_distro: galactic
+        ros2_distro: humble
         ws: /opt/ros2_ws
         colcon_args:
             - build
@@ -48,7 +52,7 @@ images:
             install:
                 - --from-paths src
                 - --ignore-src
-                - --skip-keys "console_bridge fastcdr fastrtps libopensplice69 rti-connext-dds-5.3.1 urdfdom_headers"
+                - --skip-keys "console_bridge fastcdr fastrtps libopensplice69 rti-connext-dds-7.7.0 urdfdom_headers"
         vcs:
             imports:
                 repos:

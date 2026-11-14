@@ -1,6 +1,6 @@
-# This is an auto generated Dockerfile for ros:nightly
-# generated from docker_images_ros2/nightly/create_ros_image.Dockerfile.em
-FROM ubuntu:focal
+# multi-stage for setup
+FROM ubuntu:resolute-20261006 AS setuper
+ARG DEBIAN_FRONTEND=noninteractive
 
 # setup timezone
 RUN echo 'Etc/UTC' > /etc/timezone && \
@@ -17,16 +17,38 @@ RUN apt-get update && apt-get install -q -y --no-install-recommends \
     git \
     gnupg2 \
     libssl-dev \
-    lsb-release \
+    python3-argcomplete \
+    python3-flake8 \
+    python3-flake8-blind-except \
+    python3-flake8-builtins \
+    python3-flake8-class-newline \
+    python3-flake8-comprehensions \
+    python3-flake8-deprecated \
+    python3-flake8-docstrings \
+    python3-flake8-import-order \
+    python3-flake8-quotes \
     python3-pip \
+    python3-pytest-cov \
+    python3-pytest-mock \
+    python3-pytest-repeat \
+    python3-pytest-rerunfailures \
+    python3-pytest-runner \
+    python3-pytest-timeout \
     wget \
     && rm -rf /var/lib/apt/lists/*
 
-# setup sources.list
-RUN echo "deb http://packages.ros.org/ros2-testing/ubuntu focal main" > /etc/apt/sources.list.d/ros2-testing.list
-
 # setup keys
-RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys C1CF6E31E6BADE8868B172B4F42ED6FBAB17C654
+RUN set -eux; \
+       key='C1CF6E31E6BADE8868B172B4F42ED6FBAB17C654'; \
+       export GNUPGHOME="$(mktemp -d)"; \
+       gpg --batch --keyserver keyserver.ubuntu.com --recv-keys "$key"; \
+       mkdir -p /usr/share/keyrings; \
+       gpg --batch --export "$key" > /usr/share/keyrings/ros2-testing-archive-keyring.gpg; \
+       gpgconf --kill all; \
+       rm -rf "$GNUPGHOME"
+
+# setup sources.list
+RUN echo "deb [ signed-by=/usr/share/keyrings/ros2-testing-archive-keyring.gpg ] http://packages.ros.org/ros2-testing/ubuntu resolute main" > /etc/apt/sources.list.d/ros2-testing.list
 
 # install bootstrap tools
 RUN apt-get update && apt-get install --no-install-recommends -y \
@@ -39,40 +61,15 @@ RUN apt-get update && apt-get install --no-install-recommends -y \
     && rm -rf /var/lib/apt/lists/*
 
 # setup environment
-ENV ROS_DISTRO rolling
-ENV LANG C.UTF-8
-ENV LC_ALL C.UTF-8
-ENV ROSDISTRO_INDEX_URL https://raw.githubusercontent.com/osrf/docker_images/master/ros2/nightly/nightly/index-v4.yaml
+ENV ROS_DISTRO=rolling
+ENV LANG=C.UTF-8
+ENV LC_ALL=C.UTF-8
+ENV ROSDISTRO_INDEX_URL=https://raw.githubusercontent.com/osrf/docker_images/master/ros2/nightly/nightly/index-v4.yaml
 
-# install python packages
-RUN pip3 install -U \
-    argcomplete \
-    flake8 \
-    flake8-blind-except \
-    flake8-builtins \
-    flake8-class-newline \
-    flake8-comprehensions \
-    flake8-deprecated \
-    flake8-docstrings \
-    flake8-import-order \
-    flake8-quotes \
-    pytest-repeat \
-    pytest-rerunfailures
 # This is a workaround for pytest not found causing builds to fail
 # Following RUN statements tests for regression of https://github.com/ros2/ros2/issues/722
 RUN pip3 freeze | grep pytest \
     && python3 -m pytest --version
-
-# install ros2 packages
-RUN mkdir -p /opt/ros/$ROS_DISTRO
-ARG ROS2_BINARY_URL=https://ci.ros2.org/view/packaging/job/packaging_linux/lastSuccessfulBuild/artifact/ws/ros2-package-linux-x86_64.tar.bz2
-RUN wget -q $ROS2_BINARY_URL -O - | \
-    tar -xj --strip-components=1 -C /opt/ros/$ROS_DISTRO
-
-# Overwriting _colcon_prefix_chain_sh_COLCON_CURRENT_PREFIX to point to the new install location
-# Necessary because the default value is an absolute path valid only on the build machine
-RUN sed -i "s|^\(_colcon_prefix_chain_sh_COLCON_CURRENT_PREFIX\s*=\s*\).*$|\1/opt/ros/$ROS_DISTRO|" \
-      /opt/ros/$ROS_DISTRO/setup.sh
 
 # setup colcon mixin and metadata
 RUN colcon mixin add default \
@@ -92,24 +89,46 @@ RUN echo "yaml file:///etc/ros/rosdep/prereqs.yaml" | \
     mv temp /etc/ros/rosdep/sources.list.d/20-default.list
 RUN rosdep update
 
+# multi-stage for caching
+FROM setuper AS cacher
+ARG TIMESTAMP
+
+# install ros2 packages
+RUN mkdir -p /opt/ros/$ROS_DISTRO
+ARG ROS2_BINARY_URL=https://github.com/ros2/ros2/releases/download/release-rolling-nightlies/ros2-rolling-nightly-linux-amd64.tar.bz2
+RUN wget -q $ROS2_BINARY_URL -O - | \
+    tar -xj --strip-components=1 -C /opt/ros/$ROS_DISTRO
+
+# Overwriting _colcon_prefix_chain_sh_COLCON_CURRENT_PREFIX to point to the new install location
+# Necessary because the default value is an absolute path valid only on the build machine
+RUN sed -i "s|^\(_colcon_prefix_chain_sh_COLCON_CURRENT_PREFIX\s*=\s*\).*$|\1/opt/ros/$ROS_DISTRO|" \
+      /opt/ros/$ROS_DISTRO/setup.sh
+
+# copy manifests for caching
+WORKDIR /opt/ros
+RUN mkdir -p /tmp/opt/ros/$ROS_DISTRO && \
+    find . -name "package.xml" \
+      | xargs cp --parents -t /tmp/opt/ros
+
+
+# multi-stage for nightly
+FROM setuper AS nightly
+ARG DEBIAN_FRONTEND=noninteractive
+
 # install dependencies
-RUN . /opt/ros/$ROS_DISTRO/setup.sh \
-    && apt-get update \
-    && rosdep install -y \
+COPY --from=cacher /tmp/opt/ros/$ROS_DISTRO /opt/ros/$ROS_DISTRO
+RUN apt-get update && rosdep update && rosdep install -y \
     --from-paths /opt/ros/$ROS_DISTRO/share \
     --ignore-src \
     --skip-keys " \
-      rti-connext-dds-5.3.1" \
+      cyclonedds \
+      fastdds \
+      rti-connext-dds-7.7.0 \
+      " \
     && rm -rf /var/lib/apt/lists/*
 
-# FIXME Remove this once rosdep detects ROS 2 packages https://github.com/ros-infrastructure/rosdep/issues/660
-# ignore installed rosdep keys
-ENV ROS_PACKAGE_PATH /opt/ros/$ROS_DISTRO/share
-
-# FIXME Remove this once ament_export_interfaces respects COLCON_CURRENT_PREFIX https://github.com/ament/ament_cmake/issues/173
-#Workaround hard coded paths in nightly tarball setup scripts
-ARG UPSTREAM_CI_WS=/home/jenkins-agent/workspace/packaging_linux/ws
-RUN mkdir -p $UPSTREAM_CI_WS && ln -s /opt/ros/$ROS_DISTRO $UPSTREAM_CI_WS/install
+# install nightly
+COPY --from=cacher /opt/ros/$ROS_DISTRO /opt/ros/$ROS_DISTRO
 
 # setup entrypoint
 COPY ./ros_entrypoint.sh /

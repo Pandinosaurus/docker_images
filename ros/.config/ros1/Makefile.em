@@ -32,3 +32,33 @@ clean:
 	@docker rmi -f ros:$release_name-perception-$os_code_name
 	# @docker rmi -f osrf/ros:$release_name-desktop-$os_code_name
 	# @docker rmi -f osrf/ros:$release_name-desktop-full-$os_code_name
+
+ci_buildx:
+	@docker buildx build --pull --push \
+		--cache-from=type=registry,ref=osrf/ros:$release_name-desktop-$os_code_name \
+		--cache-to=type=inline \
+		--tag=osrf/ros:$release_name-desktop-$os_code_name \
+		desktop/.
+	@if [ "$os_name" = "ubuntu" ]; then \
+		docker pull \
+			osrf/ros:$release_name-desktop-$os_code_name; \
+		docker tag \
+			osrf/ros:$release_name-desktop-$os_code_name \
+			osrf/ros:$release_name-desktop; \
+		docker push \
+			osrf/ros:$release_name-desktop; \
+	fi
+	@docker buildx build --pull --push \
+		--cache-from=type=registry,ref=osrf/ros:$release_name-desktop-full-$os_code_name \
+		--cache-to=type=inline \
+		--tag=osrf/ros:$release_name-desktop-full-$os_code_name \
+		desktop-full/.
+	@if [ "$os_name" = "ubuntu" ]; then \
+		docker pull \
+			osrf/ros:$release_name-desktop-full-$os_code_name; \
+		docker tag \
+			osrf/ros:$release_name-desktop-full-$os_code_name \
+			osrf/ros:$release_name-desktop-full; \
+		docker push \
+			osrf/ros:$release_name-desktop-full; \
+	fi

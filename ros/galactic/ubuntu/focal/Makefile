@@ -26,3 +26,19 @@ clean:
 	@docker rmi -f ros:galactic-ros-base-focal
 	@docker rmi -f ros:galactic-ros1-bridge-focal
 	# @docker rmi -f osrf/ros:galactic-desktop-focal
+
+ci_buildx:
+	@docker buildx build --pull --push \
+		--cache-from=type=registry,ref=osrf/ros:galactic-desktop-focal \
+		--cache-to=type=inline \
+		--tag=osrf/ros:galactic-desktop-focal \
+		desktop/.
+	@if [ "ubuntu" = "ubuntu" ]; then \
+		docker pull \
+			osrf/ros:galactic-desktop-focal; \
+    	docker tag \
+			osrf/ros:galactic-desktop-focal \
+			osrf/ros:galactic-desktop; \
+		docker push \
+			osrf/ros:galactic-desktop; \
+	fi

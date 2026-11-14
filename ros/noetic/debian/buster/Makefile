@@ -32,3 +32,33 @@ clean:
 	@docker rmi -f ros:noetic-perception-buster
 	# @docker rmi -f osrf/ros:noetic-desktop-buster
 	# @docker rmi -f osrf/ros:noetic-desktop-full-buster
+
+ci_buildx:
+	@docker buildx build --pull --push \
+		--cache-from=type=registry,ref=osrf/ros:noetic-desktop-buster \
+		--cache-to=type=inline \
+		--tag=osrf/ros:noetic-desktop-buster \
+		desktop/.
+	@if [ "debian" = "ubuntu" ]; then \
+		docker pull \
+			osrf/ros:noetic-desktop-buster; \
+		docker tag \
+			osrf/ros:noetic-desktop-buster \
+			osrf/ros:noetic-desktop; \
+		docker push \
+			osrf/ros:noetic-desktop; \
+	fi
+	@docker buildx build --pull --push \
+		--cache-from=type=registry,ref=osrf/ros:noetic-desktop-full-buster \
+		--cache-to=type=inline \
+		--tag=osrf/ros:noetic-desktop-full-buster \
+		desktop-full/.
+	@if [ "debian" = "ubuntu" ]; then \
+		docker pull \
+			osrf/ros:noetic-desktop-full-buster; \
+		docker tag \
+			osrf/ros:noetic-desktop-full-buster \
+			osrf/ros:noetic-desktop-full; \
+		docker push \
+			osrf/ros:noetic-desktop-full; \
+	fi

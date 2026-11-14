@@ -3,31 +3,29 @@
 ---
 defaults:
 
-    default_hooks: &DEFAULT_HOOKS
-        hook_names:
-            post_push: .hooks/post_push.em
-
-    default_hooks: &DEFAULT_HOOKS_LEGACY
-        hook_names:
-            post_push: .hooks/legacy/post_push.em
-
     default: &DEFAULT_ROS1
-        templates: &DEFAULT_TEMPLATES_ROS1
+        templates:
             images: .config/ros1/images.yaml.em
             makefile: .config/ros1/Makefile.em
             platform: .config/ros1/platform.yaml.em
 
     default: &DEFAULT_ROS2
-        templates: &DEFAULT_TEMPLATES_ROS2
+        templates:
             images: .config/ros2/images.yaml.em
             makefile: .config/ros2/Makefile.em
             platform: .config/ros2/platform.yaml.em
 
-    default: &DEFAULT_LEGACY
-        templates: &DEFAULT_TEMPLATES_LEGACY
-            images: .config/legacy/images.yaml.em
-            makefile: .config/legacy/Makefile.em
-            platform: .config/legacy/platform.yaml.em
+    default: &DEFAULT_ROS1_LEGACY
+        templates:
+            images: .config/legacy/ros1/images.yaml.em
+            makefile: .config/legacy/ros1/Makefile.em
+            platform: .config/legacy/ros1/platform.yaml.em
+
+    default: &DEFAULT_ROS2_LEGACY
+        templates:
+            images: .config/legacy/ros2/images.yaml.em
+            makefile: .config/legacy/ros2/Makefile.em
+            platform: .config/legacy/ros2/platform.yaml.em
 
 release_names:
     boxturtle:
@@ -36,7 +34,7 @@ release_names:
             ubuntu:
                 os_code_names:
                     lucid:
-                        <<: *DEFAULT_LEGACY
+                        <<: *DEFAULT_ROS1_LEGACY
                         archs:
                             - amd64
                         tag_names:
@@ -46,7 +44,7 @@ release_names:
             ubuntu:
                 os_code_names:
                     lucid:
-                        <<: *DEFAULT_LEGACY
+                        <<: *DEFAULT_ROS1_LEGACY
                         archs:
                             - amd64
                         tag_names:
@@ -56,7 +54,7 @@ release_names:
             ubuntu:
                 os_code_names:
                     lucid:
-                        <<: *DEFAULT_LEGACY
+                        <<: *DEFAULT_ROS1_LEGACY
                         archs:
                             - amd64
                         tag_names:
@@ -66,7 +64,7 @@ release_names:
             ubuntu:
                 os_code_names:
                     lucid:
-                        <<: *DEFAULT_LEGACY
+                        <<: *DEFAULT_ROS1_LEGACY
                         archs:
                             - amd64
                         tag_names:
@@ -76,7 +74,7 @@ release_names:
             ubuntu:
                 os_code_names:
                     precise:
-                        <<: *DEFAULT_LEGACY
+                        <<: *DEFAULT_ROS1_LEGACY
                         archs:
                             - amd64
                         tag_names:
@@ -86,7 +84,7 @@ release_names:
             ubuntu:
                 os_code_names:
                     precise:
-                        <<: *DEFAULT_LEGACY
+                        <<: *DEFAULT_ROS1_LEGACY
                         archs:
                             - amd64
                         tag_names:
@@ -96,7 +94,7 @@ release_names:
             ubuntu:
                 os_code_names:
                     precise:
-                        <<: *DEFAULT_LEGACY
+                        <<: *DEFAULT_ROS1_LEGACY
                         archs:
                             - amd64
                         tag_names:
@@ -290,23 +288,24 @@ release_names:
                             - arm32v7
                             - arm64v8
                         tag_names:
-                            ros-core:
-                                aliases:
-                                    - "$release_name-ros-core"
-                                    - "$release_name-ros-core-$os_code_name"
-                            ros-base:
-                                aliases:
-                                    - "$release_name-ros-base"
-                                    - "$release_name-ros-base-$os_code_name"
-                                    - "$release_name"
-                            robot:
-                                aliases:
-                                    - "$release_name-robot"
-                                    - "$release_name-robot-$os_code_name"
-                            perception:
-                                aliases:
-                                    - "$release_name-perception"
-                                    - "$release_name-perception-$os_code_name"
+                            # EOL
+                            # ros-core:
+                            #     aliases:
+                            #         - "$release_name-ros-core"
+                            #         - "$release_name-ros-core-$os_code_name"
+                            # ros-base:
+                            #     aliases:
+                            #         - "$release_name-ros-base"
+                            #         - "$release_name-ros-base-$os_code_name"
+                            #         - "$release_name"
+                            # robot:
+                            #     aliases:
+                            #         - "$release_name-robot"
+                            #         - "$release_name-robot-$os_code_name"
+                            # perception:
+                            #     aliases:
+                            #         - "$release_name-perception"
+                            #         - "$release_name-perception-$os_code_name"
             debian:
                 os_code_names:
                     stretch:
@@ -340,23 +339,24 @@ release_names:
                             - arm32v7
                             - arm64v8
                         tag_names:
-                            ros-core:
-                                aliases:
-                                    - "$release_name-ros-core"
-                                    - "$release_name-ros-core-$os_code_name"
-                            ros-base:
-                                aliases:
-                                    - "$release_name-ros-base"
-                                    - "$release_name-ros-base-$os_code_name"
-                                    - "$release_name"
-                            robot:
-                                aliases:
-                                    - "$release_name-robot"
-                                    - "$release_name-robot-$os_code_name"
-                            perception:
-                                aliases:
-                                    - "$release_name-perception"
-                                    - "$release_name-perception-$os_code_name"
+                            # EOL
+                            # ros-core:
+                            #     aliases:
+                            #         - "$release_name-ros-core"
+                            #         - "$release_name-ros-core-$os_code_name"
+                            # ros-base:
+                            #     aliases:
+                            #         - "$release_name-ros-base"
+                            #         - "$release_name-ros-base-$os_code_name"
+                            #         - "$release_name"
+                            # robot:
+                            #     aliases:
+                            #         - "$release_name-robot"
+                            #         - "$release_name-robot-$os_code_name"
+                            # perception:
+                            #     aliases:
+                            #         - "$release_name-perception"
+                            #         - "$release_name-perception-$os_code_name"
             debian:
                 os_code_names:
                     buster:
@@ -365,18 +365,19 @@ release_names:
                             - amd64
                             - arm64v8
                         tag_names:
-                            ros-core:
-                                aliases:
-                                    - "$release_name-ros-core-$os_code_name"
-                            ros-base:
-                                aliases:
-                                    - "$release_name-ros-base-$os_code_name"
-                            robot:
-                                aliases:
-                                    - "$release_name-robot-$os_code_name"
-                            perception:
-                                aliases:
-                                    - "$release_name-perception-$os_code_name"
+                            # EOL
+                            # ros-core:
+                            #     aliases:
+                            #         - "$release_name-ros-core-$os_code_name"
+                            # ros-base:
+                            #     aliases:
+                            #         - "$release_name-ros-base-$os_code_name"
+                            # robot:
+                            #     aliases:
+                            #         - "$release_name-robot-$os_code_name"
+                            # perception:
+                            #     aliases:
+                            #         - "$release_name-perception-$os_code_name"
     ardent:
         eol: 2018-12
         os_names:
@@ -384,7 +385,7 @@ release_names:
                 os_code_names:
                     xenial:
                         rosdistro_name: kinetic
-                        <<: *DEFAULT_ROS2
+                        <<: *DEFAULT_ROS2_LEGACY
                         archs:
                             - amd64
                             - arm64v8
@@ -406,7 +407,7 @@ release_names:
                 os_code_names:
                     bionic:
                         rosdistro_name: melodic
-                        <<: *DEFAULT_ROS2
+                        <<: *DEFAULT_ROS2_LEGACY
                         archs:
                             - amd64
                             - arm64v8
@@ -428,7 +429,7 @@ release_names:
                 os_code_names:
                     bionic:
                         rosdistro_name: melodic
-                        <<: *DEFAULT_ROS2
+                        <<: *DEFAULT_ROS2_LEGACY
                         archs:
                             - amd64
                             - arm64v8
@@ -450,7 +451,7 @@ release_names:
                 os_code_names:
                     bionic:
                         rosdistro_name: melodic
-                        <<: *DEFAULT_ROS2
+                        <<: *DEFAULT_ROS2_LEGACY
                         archs:
                             - amd64
                             - arm32v7
@@ -477,7 +478,7 @@ release_names:
                 os_code_names:
                     bionic:
                         rosdistro_name: melodic
-                        <<: *DEFAULT_ROS2
+                        <<: *DEFAULT_ROS2_LEGACY
                         archs:
                             - amd64
                             - arm32v7
@@ -498,12 +499,160 @@ release_names:
                             #         - "$release_name-ros1-bridge"
                             #         - "$release_name-ros1-bridge-$os_code_name"
     foxy:
-        eol: 2025-05
+        eol: 2023-05
         os_names:
             ubuntu:
                 os_code_names:
                     focal:
                         rosdistro_name: noetic
+                        <<: *DEFAULT_ROS2_LEGACY
+                        archs:
+                            - amd64
+                            - arm64v8
+                        tag_names:
+                            # EOL
+                            # ros-core:
+                            #     aliases:
+                            #         - "$release_name-ros-core"
+                            #         - "$release_name-ros-core-$os_code_name"
+                            # ros-base:
+                            #     aliases:
+                            #         - "$release_name-ros-base"
+                            #         - "$release_name-ros-base-$os_code_name"
+                            #         - "$release_name"
+                            # ros1-bridge:
+                            #     aliases:
+                            #         - "$release_name-ros1-bridge"
+                            #         - "$release_name-ros1-bridge-$os_code_name"
+    galactic:
+        eol: 2022-11
+        os_names:
+            ubuntu:
+                os_code_names:
+                    focal:
+                        rosdistro_name: noetic
+                        <<: *DEFAULT_ROS2_LEGACY
+                        archs:
+                            - amd64
+                            - arm64v8
+                        tag_names:
+                            # EOL
+                            # ros-core:
+                            #     aliases:
+                            #         - "$release_name-ros-core"
+                            #         - "$release_name-ros-core-$os_code_name"
+                            # ros-base:
+                            #     aliases:
+                            #         - "$release_name-ros-base"
+                            #         - "$release_name-ros-base-$os_code_name"
+                            #         - "$release_name"
+                            # ros1-bridge:
+                            #     aliases:
+                            #         - "$release_name-ros1-bridge"
+                            #         - "$release_name-ros1-bridge-$os_code_name"
+    humble:
+        eol: 2025-05
+        os_names:
+            ubuntu:
+                os_code_names:
+                    jammy:
+                        <<: *DEFAULT_ROS2
+                        archs:
+                            - amd64
+                            - arm64v8
+                        tag_names:
+                            ros-core:
+                                aliases:
+                                    - "$release_name-ros-core"
+                                    - "$release_name-ros-core-$os_code_name"
+                            ros-base:
+                                aliases:
+                                    - "$release_name-ros-base"
+                                    - "$release_name-ros-base-$os_code_name"
+                                    - "$release_name"
+                            perception:
+                                aliases:
+                                    - "$release_name-perception"
+                                    - "$release_name-perception-$os_code_name"
+    iron:
+        eol: 2024-11
+        os_names:
+            ubuntu:
+                os_code_names:
+                    jammy:
+                        <<: *DEFAULT_ROS2
+                        archs:
+                            - amd64
+                            - arm64v8
+                        tag_names:
+                            # EOL
+                            # ros-core:
+                            #     aliases:
+                            #         - "$release_name-ros-core"
+                            #         - "$release_name-ros-core-$os_code_name"
+                            # ros-base:
+                            #     aliases:
+                            #         - "$release_name-ros-base"
+                            #         - "$release_name-ros-base-$os_code_name"
+                            #         - "$release_name"
+                            # perception:
+                            #     aliases:
+                            #         - "$release_name-perception"
+                            #         - "$release_name-perception-$os_code_name"
+    jazzy:
+        eol: 2029-05
+        os_names:
+            ubuntu:
+                os_code_names:
+                    noble:
+                        <<: *DEFAULT_ROS2
+                        archs:
+                            - amd64
+                            - arm64v8
+                        tag_names:
+                            ros-core:
+                                aliases:
+                                    - "$release_name-ros-core"
+                                    - "$release_name-ros-core-$os_code_name"
+                            ros-base:
+                                aliases:
+                                    - "$release_name-ros-base"
+                                    - "$release_name-ros-base-$os_code_name"
+                                    - "$release_name"
+                            perception:
+                                aliases:
+                                    - "$release_name-perception"
+                                    - "$release_name-perception-$os_code_name"
+    kilted:
+        eol: 2026-11
+        os_names:
+            ubuntu:
+                os_code_names:
+                    noble:
+                        <<: *DEFAULT_ROS2
+                        archs:
+                            - amd64
+                            - arm64v8
+                        tag_names:
+                            ros-core:
+                                aliases:
+                                    - "$release_name-ros-core"
+                                    - "$release_name-ros-core-$os_code_name"
+                            ros-base:
+                                aliases:
+                                    - "$release_name-ros-base"
+                                    - "$release_name-ros-base-$os_code_name"
+                                    - "$release_name"
+                            perception:
+                                aliases:
+                                    - "$release_name-perception"
+                                    - "$release_name-perception-$os_code_name"
+    lyrical:
+        eol: 2031-05
+        os_names:
+            ubuntu:
+                os_code_names:
+                    resolute:
                         <<: *DEFAULT_ROS2
                         archs:
                             - amd64
@@ -519,42 +668,16 @@ release_names:
                                     - "$release_name-ros-base-$os_code_name"
                                     - "$release_name"
                                     - latest
-                            ros1-bridge:
+                            perception:
                                 aliases:
-                                    - "$release_name-ros1-bridge"
-                                    - "$release_name-ros1-bridge-$os_code_name"
-    galactic:
-        eol: 2022-11
-        os_names:
-            ubuntu:
-                os_code_names:
-                    focal:
-                        rosdistro_name: noetic
-                        <<: *DEFAULT_ROS2
-                        archs:
-                            - amd64
-                            - arm64v8
-                        tag_names:
-                            ros-core:
-                                aliases:
-                                    - "$release_name-ros-core"
-                                    - "$release_name-ros-core-$os_code_name"
-                            ros-base:
-                                aliases:
-                                    - "$release_name-ros-base"
-                                    - "$release_name-ros-base-$os_code_name"
-                                    - "$release_name"
-                            ros1-bridge:
-                                aliases:
-                                    - "$release_name-ros1-bridge"
-                                    - "$release_name-ros1-bridge-$os_code_name"
+                                    - "$release_name-perception"
+                                    - "$release_name-perception-$os_code_name"
     rolling:
-        eol: 2022-05
+        eol: 2031-05
         os_names:
             ubuntu:
                 os_code_names:
-                    focal:
-                        rosdistro_name: noetic
+                    resolute:
                         <<: *DEFAULT_ROS2
                         archs:
                             - amd64
@@ -569,10 +692,10 @@ release_names:
                                     - "$release_name-ros-base"
                                     - "$release_name-ros-base-$os_code_name"
                                     - "$release_name"
-                            ros1-bridge:
+                            perception:
                                 aliases:
-                                    - "$release_name-ros1-bridge"
-                                    - "$release_name-ros1-bridge-$os_code_name"
+                                    - "$release_name-perception"
+                                    - "$release_name-perception-$os_code_name"
 meta:
     maintainers:
         - Tully Foote <tfoote+buildfarm@osrfoundation.org> (@tfoote)
@@ -580,201 +703,3 @@ meta:
     template_packages:
         - docker_templates
     repo_url: https://github.com/osrf/docker_images.git
-
-hacks:
-
-    boxturtle:
-        os_names:
-            ubuntu:
-                os_code_names:
-                    lucid:
-                        tag_names:
-                            ros:
-                                <<: *DEFAULT_HOOKS_LEGACY
-    cturtle:
-        os_names:
-            ubuntu:
-                os_code_names:
-                    lucid:
-                        tag_names:
-                            ros:
-                                <<: *DEFAULT_HOOKS_LEGACY
-    diamondback:
-        os_names:
-            ubuntu:
-                os_code_names:
-                    lucid:
-                        tag_names:
-                            ros:
-                                <<: *DEFAULT_HOOKS_LEGACY
-    electric:
-        os_names:
-            ubuntu:
-                os_code_names:
-                    lucid:
-                        tag_names:
-                            ros:
-                                <<: *DEFAULT_HOOKS_LEGACY
-    fuerte:
-        os_names:
-            ubuntu:
-                os_code_names:
-                    precise:
-                        tag_names:
-                            ros:
-                                <<: *DEFAULT_HOOKS_LEGACY
-    groovy:
-        os_names:
-            ubuntu:
-                os_code_names:
-                    precise:
-                        tag_names:
-                            ros:
-                                <<: *DEFAULT_HOOKS_LEGACY
-    hydro:
-        os_names:
-            ubuntu:
-                os_code_names:
-                    precise:
-                        tag_names:
-                            ros:
-                                <<: *DEFAULT_HOOKS_LEGACY
-    indigo:
-        os_names:
-            ubuntu:
-                os_code_names:
-                    trusty:
-                        tag_names:
-                            # EOL
-                            # desktop:
-                            #     <<: *DEFAULT_HOOKS
-                            # desktop-full:
-                            #     <<: *DEFAULT_HOOKS
-    jade:
-        os_names:
-            ubuntu:
-                os_code_names:
-                    trusty:
-                        tag_names:
-                            # EOL
-                            # desktop:
-                            #     <<: *DEFAULT_HOOKS
-                            # desktop-full:
-                            #     <<: *DEFAULT_HOOKS
-    kinetic:
-        os_names:
-            ubuntu:
-                os_code_names:
-                    xenial:
-                        tag_names:
-                            # EOL
-                            # desktop:
-                            #     <<: *DEFAULT_HOOKS
-                            # desktop-full:
-                            #     <<: *DEFAULT_HOOKS
-    lunar:
-        os_names:
-            ubuntu:
-                os_code_names:
-                    xenial:
-                        tag_names:
-                            # EOL
-                            # desktop:
-                            #     <<: *DEFAULT_HOOKS
-                            # desktop-full:
-                            #     <<: *DEFAULT_HOOKS
-    melodic:
-        os_names:
-            ubuntu:
-                os_code_names:
-                    bionic:
-                        tag_names:
-                            desktop:
-                                <<: *DEFAULT_HOOKS
-                            desktop-full:
-                                <<: *DEFAULT_HOOKS
-    noetic:
-        os_names:
-            ubuntu:
-                os_code_names:
-                    focal:
-                        tag_names:
-                            desktop:
-                                <<: *DEFAULT_HOOKS
-                            desktop-full:
-                                <<: *DEFAULT_HOOKS
-    ardent:
-        os_names:
-            ubuntu:
-                os_code_names:
-                    xenial:
-                        tag_names:
-                            # EOL
-                            # desktop:
-                            #     <<: *DEFAULT_HOOKS
-                            # ros1-bridge:
-                            #     <<: *DEFAULT_HOOKS
-    bouncy:
-        os_names:
-            ubuntu:
-                os_code_names:
-                    bionic:
-                        tag_names:
-                            # EOL
-                            # desktop:
-                            #     <<: *DEFAULT_HOOKS
-                            # ros1-bridge:
-                            #     <<: *DEFAULT_HOOKS
-    crystal:
-        os_names:
-            ubuntu:
-                os_code_names:
-                    bionic:
-                        tag_names:
-                            # EOL
-                            # desktop:
-                            #     <<: *DEFAULT_HOOKS
-                            # ros1-bridge:
-                            #     <<: *DEFAULT_HOOKS
-    dashing:
-        os_names:
-            ubuntu:
-                os_code_names:
-                    bionic:
-                        tag_names:
-                            # EOL
-                            # desktop:
-                            #     <<: *DEFAULT_HOOKS
-    eloquent:
-        os_names:
-            ubuntu:
-                os_code_names:
-                    bionic:
-                        tag_names:
-                            # EOL
-                            # desktop:
-                            #     <<: *DEFAULT_HOOKS
-    foxy:
-        os_names:
-            ubuntu:
-                os_code_names:
-                    focal:
-                        tag_names:
-                            desktop:
-                                <<: *DEFAULT_HOOKS
-    galactic:
-        os_names:
-            ubuntu:
-                os_code_names:
-                    focal:
-                        tag_names:
-                            desktop:
-                                <<: *DEFAULT_HOOKS
-    rolling:
-        os_names:
-            ubuntu:
-                os_code_names:
-                    focal:
-                        tag_names:
-                            desktop:
-                                <<: *DEFAULT_HOOKS

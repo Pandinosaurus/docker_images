@@ -22,11 +22,11 @@ RUN apt-get update && apt-get install -q -y --no-install-recommends \
 
 # install gazebo packages
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    libgazebo11-dev=11.9.0-1* \
+    libgazebo11-dev=11.15.1-1* \
     && rm -rf /var/lib/apt/lists/*
 
 # clone gzweb
-ENV GZWEB_WS /root/gzweb
+ENV GZWEB_WS=/root/gzweb
 RUN hg clone https://bitbucket.org/osrf/gzweb $GZWEB_WS
 WORKDIR $GZWEB_WS
 
